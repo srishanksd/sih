@@ -38,6 +38,11 @@ class ConvLSTMNowcaster(nn.Module):
             self.cells.append(ConvLSTMCell(channels, hidden, kernel_size))
             channels = hidden
         self.head = nn.Conv2d(channels, out_channels, 1)
+        # During autoregressive forecasting, only the predicted target is known.
+        # Project it back to the multimodal input space; auxiliary channels are
+        # represented through learned combinations rather than fabricated data.
+        self.feedback = (nn.Conv2d(out_channels, in_channels, 1)
+                         if in_channels != out_channels else nn.Identity())
 
     def _encode_step(self, x, states):
         new_states = []
@@ -55,6 +60,7 @@ class ConvLSTMNowcaster(nn.Module):
         current = x[:, -1]
         for _ in range(future_steps):
             hidden, states = self._encode_step(current, states)
-            current = self.head(hidden).sigmoid()
-            outputs.append(current)
+            predicted = self.head(hidden).sigmoid()
+            outputs.append(predicted)
+            current = self.feedback(predicted)
         return torch.stack(outputs, dim=1)

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>VAJRA-CSDD</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand"><strong>VAJRA-CSDD</strong><span>Convective Scale Decision Dashboard</span></div>
+        <div class="topmeta">Prototype</div>
+    </header>
+    <main>
+        <div class="page-title">
+            <div>
+                <h1>Nowcasting Dashboard</h1>
+                <p>Thunderstorm, hail and cloudburst monitoring</p>
+            </div>
+            <div class="timebox"><span>VALID TIME</span><b id="tv">T+0 min</b></div>
+        </div>
+        <div class="summary">
+            <div><label>Active storm cells</label><strong id="cells">-</strong></div>
+            <div><label>Forecast lead</label><strong id="lead">-</strong></div>
+            <div><label>Input quality</label><strong id="quality">-</strong></div>
+            <div><label>Data status</label><strong id="datastatus">-</strong></div>
+        </div>
+        <div class="layout">
+            <section class="panel map-panel">
+                <div class="panel-title">
+                    <div>
+                        <h2>Convective State</h2>
+                        <p>Observed storm objects and current field</p>
+                    </div><span id="mode">-</span>
+                </div><canvas id="map" width="1100" height="620"></canvas>
+                <div class="controls"><button id="play">Play</button><input id="time" type="range" min="0" max="60"
+                        value="0"><span id="rangeval">0 min</span></div>
+            </section>
+            <aside>
+                <section class="panel">
+                    <div class="panel-title">
+                        <div>
+                            <h2>Sensor Inputs</h2>
+                            <p>Availability and quality</p>
+                        </div>
+                    </div>
+                    <div id="sensors" class="rows"></div>
+                </section>
+                <section class="panel">
+                    <div class="panel-title">
+                        <div>
+                            <h2>Hazard Probability</h2>
+                            <p>Forecast output</p>
+                        </div>
+                    </div>
+                    <div id="hazards" class="rows"></div>
+                </section>
+            </aside>
+        </div>
+        <section class="panel storm-panel">
+            <div class="panel-title">
+                <div>
+                    <h2>Storm Objects</h2>
+                    <p>Object-level state used by the forecast</p>
+                </div>
+            </div>
+            <div id="storms" class="storm-table">
+                <div class="table-head"><span>ID</span><span>Intensity</span><span>Motion</span><span>Quality</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+
+</html>

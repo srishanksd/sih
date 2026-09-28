@@ -8,26 +8,46 @@ __pycache__/
 build/
 dist/
 
-# Virtual environment
+# Virtual environments
 .venv/
+.venv_*/
 venv/
 env/
 
-# Local data and generated datasets
+# Local data and downloaded datasets
 data/raw/
 data/processed/
 data/splits/
 data/synthetic/
+data/demo/
+data/demo_gfs/
+
+# Meteorological / scientific data files (do not commit raw or generated data)
+*.nc
+*.nc4
+*.h5
+*.hdf
+*.hdf5
+*.grib
+*.grib2
+*.grb
+*.grb2
+*.npy
+*.npz
+*.zarr/
 
 # Model checkpoints / weights
 training/checkpoints/
+training/checkpoints_*/
 *.pt
 *.pth
 *.ckpt
 *.safetensors
 
-# Local logs / caches
+# Local logs / caches / temporary outputs
 *.log
+*.tmp
+*.temp
 .cache/
 .ipynb_checkpoints/
 
@@ -37,7 +57,26 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local secrets
+# Local secrets / environment files
 .env
 .env.*
 !.env.example
+
+# Local test / coverage outputs
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build / packaging leftovers
+*.egg-info/
+*.whl
+pip-wheel-metadata/
+
+# Local frontend dependencies
+node_modules/
+
+# Local exports / generated reports
+*.pdf
+*.zip
+*.tar
+*.tar.gz

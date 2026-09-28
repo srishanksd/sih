@@ -1,0 +1,32 @@
+"""Temporal windows for paired DWR + INSAT sequences."""
+from pathlib import Path
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+
+class MultimodalSequenceDataset(Dataset):
+    def __init__(self, files, input_steps=8, forecast_steps=4, stride=1):
+        self.files = [Path(f) for f in files]
+        self.input_steps = input_steps
+        self.forecast_steps = forecast_steps
+        self.samples = []
+        window = input_steps + forecast_steps
+        for path in self.files:
+            arr = np.load(path, mmap_mode="r")
+            for start in range(0, max(0, arr.shape[0] - window + 1), stride):
+                self.samples.append((path, start))
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, index):
+        path, start = self.samples[index]
+        arr = np.asarray(
+            np.load(path, mmap_mode="r")[start:start + self.input_steps + self.forecast_steps],
+            dtype=np.float32,
+        )
+        arr = np.nan_to_num(arr, nan=0.0, posinf=1.0, neginf=0.0)
+        arr = np.clip(arr, 0.0, 1.0)
+        x = torch.from_numpy(arr[:self.input_steps])
+        y = torch.from_numpy(arr[self.input_steps:, 0:1])
+        return x, y
