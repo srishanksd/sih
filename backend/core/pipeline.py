@@ -8,6 +8,7 @@ from models.state_estimation import estimate
 from models.storm_detection import detect
 from models.storm_lifecycle.events import classify
 from models.storm_tracking import track
+from models.system import VAJRACSDDModel
 
 
 def run(current_field, previous_field, sensor_quality, lead_minutes=60):
@@ -16,9 +17,25 @@ def run(current_field, previous_field, sensor_quality, lead_minutes=60):
     tracked = track(current, previous)
     state = estimate(tracked, sensor_quality)
     objects = object_forecast(state, lead_minutes)
-    field = advect(current_field, np.mean([o.get("dx",0) for o in state] or [0]), np.mean([o.get("dy",0) for o in state] or [0]), lead_minutes)
+    field = advect(
+        current_field,
+        np.mean([o.get("dx", 0) for o in state] or [0]),
+        np.mean([o.get("dy", 0) for o in state] or [0]),
+        lead_minutes,
+    )
     consistency = score(objects, field)
     events = classify(previous, current)
     max_intensity = max([o["intensity"] for o in objects] or [0])
-    return {"objects": objects, "field": field, "events": events, "consistency": consistency,
-            "quality": overall_quality(sensor_quality), "hazards": probabilities(max_intensity)}
+    return {
+        "objects": objects,
+        "field": field,
+        "events": events,
+        "consistency": consistency,
+        "quality": overall_quality(sensor_quality),
+        "hazards": probabilities(max_intensity),
+    }
+
+
+def architecture_components():
+    """Expose the frozen VAJRA-CSDD composition without changing training."""
+    return VAJRACSDDModel()
