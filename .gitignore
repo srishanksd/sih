@@ -35,7 +35,7 @@ data/demo_gfs/
 *.npy
 *.npz
 *.zarr/
-
+*.json
 # Model checkpoints / weights
 training/checkpoints/
 training/checkpoints_*/
